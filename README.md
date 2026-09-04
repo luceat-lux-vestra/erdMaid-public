@@ -26,7 +26,7 @@ erdMaid is a JetBrains IDE plugin that turns table metadata already available in
 
 ## Example output
 
-Given tables such as `users` and `orders`, erdMaid produces ordinary Mermaid `erDiagram` syntax that can be rendered by any compatible Mermaid viewer:
+Given tables such as `users` and `orders`, erdMaid produces ordinary Mermaid `erDiagram` syntax that can be rendered by any compatible Mermaid viewer. Foreign-key columns are represented through the relationship plus a Mermaid comment that records the concrete column mapping:
 
 ```mermaid
 erDiagram
@@ -37,13 +37,14 @@ erDiagram
 
     ORDERS {
         BIGINT id PK
-        BIGINT user_id FK
+        BIGINT user_id
     }
 
-    USERS ||--o{ ORDERS : ""
+%% FK: ORDERS.user_id -> USERS.id
+    USERS ||--o{ ORDERS : "fk_orders_users"
 ```
 
-The exact output is derived from the metadata reported by the IDE for the selected database objects.
+The exact output is derived from the metadata reported by the IDE for the selected database objects, including the relationship name when the database metadata provides one.
 
 ## Output rules
 
