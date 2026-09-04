@@ -1,35 +1,77 @@
 # erdMaid
 
-**Export database tables as Mermaid ER diagrams from JetBrains IDEs.**
+**Export real database tables as Mermaid ER diagrams from JetBrains IDEs.**
 
-erdMaid is a JetBrains IDE plugin for turning table metadata from the Database tool window into Mermaid `erDiagram` syntax. It is intended for developers who want a fast way to move real schema structure into Markdown, documentation, and architecture notes without rewriting table definitions by hand.
+erdMaid is a JetBrains IDE plugin that turns table metadata already available in the Database tool window into Mermaid `erDiagram` syntax. It is intended for developers who want to move real schema structure into Markdown, documentation, and architecture notes without rewriting table definitions by hand.
 
-## Highlights
+> **Status:** Active development. Marketplace publication and repository consolidation are still in progress.
 
-- Export every table in a schema's `Tables` node or only selected tables
-- Preserve the column order reported by database metadata
-- Include primary keys and foreign-key relationships
-- Include column types and comments
-- Render size, precision, and scale in a Mermaid-safe representation
-- Copy generated Mermaid directly to the clipboard
-- Work inside IntelliJ IDEA Ultimate, DataGrip, and compatible JetBrains IDEs with database tooling
+## What it does
+
+- Export every table in a schema's `Tables` node or only selected tables.
+- Preserve the column order reported by database metadata.
+- Include primary keys and foreign-key relationships.
+- Include column types and comments.
+- Render size, precision, and scale in a Mermaid-safe representation.
+- Copy the generated Mermaid directly to the clipboard.
+- Work inside IntelliJ IDEA Ultimate, DataGrip, and compatible JetBrains IDEs with database tooling.
 
 ## Typical workflow
 
 1. Open the **Database** tool window.
 2. Expand a schema and its `Tables` node.
-3. Select the `Tables` node or individual tables.
+3. Select the `Tables` node to export the schema's tables, or select individual tables.
 4. Choose **Export as Mermaid ERD (erdMaid)**.
-5. Paste the generated diagram into Markdown or another Mermaid-enabled document.
+5. Paste the generated Mermaid into Markdown, documentation, or another Mermaid-enabled editor.
 
-## Output
+## Example output
 
-The exporter generates Mermaid `erDiagram` definitions from the metadata already available to the IDE. Table comments are emitted as Mermaid comments, column metadata is normalized for Mermaid parsing, and relationships are derived from foreign-key information.
+Given tables such as `users` and `orders`, erdMaid produces ordinary Mermaid `erDiagram` syntax that can be rendered by any compatible Mermaid viewer. Foreign-key columns are represented through the relationship plus a Mermaid comment that records the concrete column mapping:
+
+```mermaid
+erDiagram
+    USERS {
+        BIGINT id PK
+        VARCHAR name
+    }
+
+    ORDERS {
+        BIGINT id PK
+        BIGINT user_id
+    }
+
+%% FK: ORDERS.user_id -> USERS.id
+    USERS ||--o{ ORDERS : "fk_orders_users"
+```
+
+The exact output is derived from the metadata reported by the IDE for the selected database objects, including the relationship name when the database metadata provides one.
+
+## Output rules
+
+- Table comments are emitted as Mermaid comments.
+- Column order follows database metadata.
+- Column types are normalized where required for Mermaid parsing.
+- Column comments are sanitized so generated syntax remains parseable.
+- Numeric precision, scale, and size information use Mermaid-safe formatting.
+- Relationships are derived from foreign-key metadata.
 
 ## Scope
 
-The project currently focuses on database tables and Mermaid ER diagrams. View export and alternative diagram formats are intentionally outside the current scope.
+The project currently focuses on **database tables → Mermaid ER diagrams**.
 
-## Status
+Views, `classDiagram`, and alternative diagram formats are intentionally outside the current scope rather than incomplete promises.
 
-erdMaid is under active development. Marketplace publication and repository consolidation are still in progress.
+## Requirements
+
+- IntelliJ IDEA Ultimate, DataGrip, or another IntelliJ-based IDE with database tooling.
+- A configured database connection with table metadata available in the Database tool window.
+
+## Installation
+
+erdMaid is not yet published to JetBrains Marketplace.
+
+Development builds can be installed from disk using the generated plugin distribution. Marketplace installation instructions will be added after publication.
+
+## Project direction
+
+Current work focuses on compatibility hardening, release packaging, repository consolidation, and Marketplace publication while keeping the plugin deliberately small and database-metadata driven.
